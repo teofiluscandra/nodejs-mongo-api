@@ -1,3 +1,5 @@
 {
-    "jwtPrivateKey": ""
+    "jwtPrivateKey": "",
+    "db": "mongodb://localhost/rental",
+    "port": "3001"
 }

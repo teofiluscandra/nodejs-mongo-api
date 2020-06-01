@@ -1,7 +1,8 @@
 const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
+const {differenceInDays} = require('date-fns');
 
-const Rental = mongoose.model('Rental', new mongoose.Schema({
+const rentalSchema = new mongoose.Schema({
     customer: {
         type: new mongoose.Schema({
             name: {
@@ -46,14 +47,29 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
         required: true,
         default: Date.now
     },
-    dateReturn: {
+    dateReturned: {
         type: Date
     },
     rentalFee: {
         type: Number,
         min: 0
     }
-}))
+})
+
+rentalSchema.statics.lookup = function (customerId, movieId) {
+    return this.findOne({
+        'customer._id': customerId,
+        'movie._id': movieId
+    })
+}
+
+rentalSchema.methods.return = function () {
+    this.dateReturned = new Date();
+    const rentalDays = differenceInDays(this.dateReturned, this.dateOut);
+    this.rentalFee = rentalDays * this.movie.dailyRentalRate;
+}
+
+const Rental = mongoose.model('Rental', rentalSchema);
 
 function validateRental(rental) {
     const schema = Joi.object({
