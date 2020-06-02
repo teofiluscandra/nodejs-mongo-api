@@ -1,5 +1,5 @@
 {
-  "name": "movie-api",
+  "name": "nodejs-mongo-api",
   "version": "1.0.0",
   "description": "MongoDB CRUD movie",
   "main": "index.js",
